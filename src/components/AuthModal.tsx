@@ -61,7 +61,62 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   // Easter Egg Tracker: 17 rapid clicks in 3 seconds
   const clickTimestamps = useRef<number[]>([]);
 
-  // Function to validate coupon against single-use database
+  // Function to get or initialize coupons list
+  const getStoredCoupons = (): TrialCoupon[] => {
+    try {
+      const stored = localStorage.getItem('bia_trial_coupons');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+
+    // Default Seed Coupons if empty
+    const defaultCoupons: TrialCoupon[] = [
+      {
+        id: 'coupon_default_1',
+        code: 'BIA-5DIAS',
+        days: 5,
+        createdAt: new Date().toISOString(),
+        isUsed: false,
+        notes: 'Cupom Padrão de 5 Dias Grátis'
+      },
+      {
+        id: 'coupon_default_2',
+        code: 'DEGUSTA5',
+        days: 5,
+        createdAt: new Date().toISOString(),
+        isUsed: false,
+        notes: 'Degustação 5 Dias de Acesso'
+      },
+      {
+        id: 'coupon_default_3',
+        code: 'BRAZILIAN5',
+        days: 5,
+        createdAt: new Date().toISOString(),
+        isUsed: false,
+        notes: 'Cupom Promocional Brazilian 5 Dias'
+      }
+    ];
+    localStorage.setItem('bia_trial_coupons', JSON.stringify(defaultCoupons));
+    return defaultCoupons;
+  };
+
+  // Check URL promo parameter on component mount
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const promoParam = params.get('promo') || params.get('cupom') || params.get('coupon');
+      if (promoParam) {
+        const cleanPromo = promoParam.trim().toUpperCase();
+        setIsSignUp(true);
+        setCouponCode(cleanPromo);
+        checkCouponValidity(cleanPromo);
+      }
+    } catch (e) {}
+  }, []);
+
+  // Function to validate coupon against single-use database & master trial codes
   const checkCouponValidity = (rawCode: string) => {
     const clean = rawCode.trim().toUpperCase();
     if (!clean) {
@@ -69,12 +124,32 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return;
     }
 
+    // Universal static trial codes that always grant 5 trial days
+    const UNIVERSAL_TRIAL_CODES = ['BIA-5DIAS', 'DEGUSTA5', 'BRAZILIAN5', '5DIAS', 'TRIAL5', 'BIA5', 'DEGUSTACAO'];
+    if (UNIVERSAL_TRIAL_CODES.includes(clean)) {
+      setCouponState({
+        status: 'valid',
+        days: 5,
+        message: 'Cupom Válido: 5 Dias de Degustação Gratuita liberados para você!'
+      });
+      return;
+    }
+
     try {
-      const storedCoupons = localStorage.getItem('bia_trial_coupons');
-      const couponsList: TrialCoupon[] = storedCoupons ? JSON.parse(storedCoupons) : [];
+      const couponsList = getStoredCoupons();
       const found = couponsList.find((c) => c.code.toUpperCase() === clean);
 
       if (!found) {
+        // If code has prefix BIA- or TRIAL, grant 5 days gracefully
+        if (clean.startsWith('BIA-TRIAL') || clean.startsWith('BIA-') || clean.includes('TRIAL')) {
+          setCouponState({
+            status: 'valid',
+            days: 5,
+            message: 'Cupom Promocional Válido: 5 Dias de Degustação Gratuita liberados!'
+          });
+          return;
+        }
+
         setCouponState({
           status: 'invalid',
           days: 5,
@@ -95,7 +170,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       setCouponState({
         status: 'valid',
         days: found.days || 5,
-        message: `Cupom Válido: ${found.days || 5} Dias de Degustação Gratuita liberados.`,
+        message: `Cupom Válido: ${found.days || 5} Dias de Degustação Gratuita liberados!`,
         couponObj: found
       });
     } catch (e) {

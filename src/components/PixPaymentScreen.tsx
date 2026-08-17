@@ -151,57 +151,105 @@ export const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
     setTimeout(() => setCopied(false), 3000);
   };
 
-  // Immediate VIP Token Validation (Instant Direct Approval)
+  // Immediate VIP Token Validation (Instant Direct Approval via VIP Token or Trial Coupon)
   const handleValidateVipToken = () => {
     setVipTokenError('');
     const cleanToken = vipTokenInput.trim().toUpperCase();
 
-    const validTokens = ['BIA-VIP-2025', '170493', 'ANDRE-CEO', 'BIA-VIP', 'ACTION2025'];
-
-    if (validTokens.includes(cleanToken)) {
-      // Approve immediately
-      const storedUsersRaw = localStorage.getItem('bia_users_database');
-      let usersList: UserProfile[] = storedUsersRaw ? JSON.parse(storedUsersRaw) : [];
-
-      const expiration = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-      const updatedUser: UserProfile = {
-        ...user,
-        status: 'active',
-        email_verified: true,
-        data_expiracao: expiration,
-        last_pix_tx_id: `VIP-TOKEN-${cleanToken}`
-      };
-
-      const idx = usersList.findIndex((u) => u.id === user.id || u.email.toLowerCase() === user.email.toLowerCase());
-      if (idx >= 0) usersList[idx] = updatedUser;
-      else usersList.push(updatedUser);
-
-      localStorage.setItem('bia_users_database', JSON.stringify(usersList));
-      localStorage.setItem('bia_current_user', JSON.stringify(updatedUser));
-
-      // Record approved payment
-      const rawPayments = localStorage.getItem('bia_pix_payments');
-      let allPayments: PixPaymentRecord[] = rawPayments ? JSON.parse(rawPayments) : [];
-      allPayments.push({
-        id: `PIX-VIP-${Date.now().toString().slice(-6)}`,
-        userId: user.id,
-        userEmail: user.email,
-        amount: settings.subscriptionPrice || 10.0,
-        paidAt: new Date().toISOString(),
-        expiresAt: expiration,
-        status: 'approved',
-        method: 'pix',
-        transactionId: `TOKEN-${cleanToken}`,
-        planName: 'Plano Mensal - Brazilian in Action (Liberação VIP)'
-      });
-      localStorage.setItem('bia_pix_payments', JSON.stringify(allPayments));
-
-      window.dispatchEvent(new Event('bia_users_changed'));
-      setShowVipTokenModal(false);
-      onPaymentSuccess();
-    } else {
-      setVipTokenError('Código de liberação VIP inválido ou não autorizado.');
+    if (!cleanToken) {
+      setVipTokenError('Por favor, informe o código do cupom ou token VIP.');
+      return;
     }
+
+    const validTokens = ['BIA-VIP-2025', '170493', 'ANDRE-CEO', 'BIA-VIP', 'ACTION2025'];
+    const universalCoupons = ['BIA-5DIAS', 'DEGUSTA5', 'BRAZILIAN5', '5DIAS', 'TRIAL5', 'BIA5', 'DEGUSTACAO'];
+
+    // Check in single-use coupons database
+    let trialDays = 30; // default for VIP tokens
+    let isTrialCoupon = false;
+
+    let storedCoupons: TrialCoupon[] = [];
+    try {
+      const raw = localStorage.getItem('bia_trial_coupons');
+      if (raw) storedCoupons = JSON.parse(raw);
+    } catch (e) {}
+
+    const foundCoupon = storedCoupons.find((c) => c.code.toUpperCase() === cleanToken);
+
+    if (foundCoupon) {
+      if (foundCoupon.isUsed) {
+        setVipTokenError('Este cupom já foi utilizado anteriormente.');
+        return;
+      }
+      trialDays = foundCoupon.days || 5;
+      isTrialCoupon = true;
+    } else if (universalCoupons.includes(cleanToken) || cleanToken.startsWith('BIA-TRIAL') || cleanToken.startsWith('BIA-')) {
+      trialDays = 5;
+      isTrialCoupon = true;
+    } else if (!validTokens.includes(cleanToken)) {
+      setVipTokenError('Código de liberação ou cupom inválido.');
+      return;
+    }
+
+    // Approve user immediately
+    const storedUsersRaw = localStorage.getItem('bia_users_database');
+    let usersList: UserProfile[] = storedUsersRaw ? JSON.parse(storedUsersRaw) : [];
+
+    const expiration = new Date(Date.now() + trialDays * 24 * 60 * 60 * 1000).toISOString();
+    const updatedUser: UserProfile = {
+      ...user,
+      status: 'active',
+      email_verified: true,
+      data_expiracao: expiration,
+      cupom_usado: cleanToken,
+      last_pix_tx_id: isTrialCoupon ? `CUPOM-${cleanToken}` : `VIP-TOKEN-${cleanToken}`
+    };
+
+    // Mark coupon as used if found
+    if (foundCoupon) {
+      try {
+        const updatedCoupons = storedCoupons.map((c) => {
+          if (c.code.toUpperCase() === cleanToken) {
+            return {
+              ...c,
+              isUsed: true,
+              usedBy: user.email,
+              usedAt: new Date().toISOString()
+            };
+          }
+          return c;
+        });
+        localStorage.setItem('bia_trial_coupons', JSON.stringify(updatedCoupons));
+      } catch (e) {}
+    }
+
+    const idx = usersList.findIndex((u) => u.id === user.id || u.email.toLowerCase() === user.email.toLowerCase());
+    if (idx >= 0) usersList[idx] = updatedUser;
+    else usersList.push(updatedUser);
+
+    localStorage.setItem('bia_users_database', JSON.stringify(usersList));
+    localStorage.setItem('bia_current_user', JSON.stringify(updatedUser));
+
+    // Record approved entry
+    const rawPayments = localStorage.getItem('bia_pix_payments');
+    let allPayments: PixPaymentRecord[] = rawPayments ? JSON.parse(rawPayments) : [];
+    allPayments.push({
+      id: `PIX-PROMO-${Date.now().toString().slice(-6)}`,
+      userId: user.id,
+      userEmail: user.email,
+      amount: isTrialCoupon ? 0.0 : (settings.subscriptionPrice || 10.0),
+      paidAt: new Date().toISOString(),
+      expiresAt: expiration,
+      status: 'approved',
+      method: 'pix',
+      transactionId: isTrialCoupon ? `CUPOM-${cleanToken}` : `TOKEN-${cleanToken}`,
+      planName: isTrialCoupon ? `Degustação Gratuita (${trialDays} Dias)` : 'Plano Mensal - Brazilian in Action (Liberação VIP)'
+    });
+    localStorage.setItem('bia_pix_payments', JSON.stringify(allPayments));
+
+    window.dispatchEvent(new Event('bia_users_changed'));
+    setShowVipTokenModal(false);
+    onPaymentSuccess();
   };
 
   const isExpired = user.status === 'expired';
