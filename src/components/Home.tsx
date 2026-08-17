@@ -12,6 +12,7 @@ import {
   Sparkles 
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { SocialLinksBar } from './SocialLinksBar';
 
 interface HomeProps {
   classes: ClassItem[];
@@ -132,58 +133,10 @@ export const Home: React.FC<HomeProps> = ({
   }).length;
   const remainingTodayCount = todayClasses.length - completedTodayCount;
 
-  // Reusable Social Media Footer
+  // Reusable Social Media Footer (YouTube, TikTok, Instagram, WhatsApp)
   const renderSocialLinks = () => (
-    <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-6 px-4 py-4 w-full max-w-4xl mx-auto mt-4 mb-20 md:mb-14 shrink-0 z-10">
-      <a
-        href="https://calendar.google.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-[11px] sm:text-xs tracking-[0.14em] font-bold text-white/80 hover:text-white transition-all flex items-center gap-2 py-2 px-3.5 rounded-full bg-black/40 hover:bg-black/70 border border-white/10 hover:border-amber-400/50 backdrop-blur-md shadow-lg group"
-      >
-        <Calendar size={14} className="text-amber-400 group-hover:scale-110 transition-transform" />
-        <span>CALENDAR</span>
-      </a>
-
-      <a
-        href="https://www.instagram.com/brazilianinaction/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-[11px] sm:text-xs tracking-[0.14em] font-bold text-white/80 hover:text-white transition-all flex items-center gap-2 py-2 px-3.5 rounded-full bg-black/40 hover:bg-black/70 border border-white/10 hover:border-pink-400/50 backdrop-blur-md shadow-lg group"
-      >
-        <Instagram size={14} className="text-pink-400 group-hover:scale-110 transition-transform" />
-        <span>INSTAGRAM</span>
-      </a>
-
-      <a
-        href="https://www.youtube.com/@brazilianinaction"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-[11px] sm:text-xs tracking-[0.14em] font-bold text-white/80 hover:text-white transition-all flex items-center gap-2 py-2 px-3.5 rounded-full bg-black/40 hover:bg-black/70 border border-white/10 hover:border-red-500/50 backdrop-blur-md shadow-lg group"
-      >
-        <Youtube size={14} className="text-red-500 group-hover:scale-110 transition-transform" />
-        <span>YOUTUBE</span>
-      </a>
-
-      <a
-        href="https://meet.google.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-[11px] sm:text-xs tracking-[0.14em] font-bold text-white/80 hover:text-white transition-all flex items-center gap-2 py-2 px-3.5 rounded-full bg-black/40 hover:bg-black/70 border border-white/10 hover:border-blue-400/50 backdrop-blur-md shadow-lg group"
-      >
-        <Video size={14} className="text-blue-400 group-hover:scale-110 transition-transform" />
-        <span>GOOGLE MEET</span>
-      </a>
-
-      <a
-        href="https://sites.google.com/view/brazilianinaction/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-[11px] sm:text-xs tracking-[0.14em] font-bold text-white/80 hover:text-white transition-all flex items-center gap-2 py-2 px-3.5 rounded-full bg-black/40 hover:bg-black/70 border border-white/10 hover:border-emerald-400/50 backdrop-blur-md shadow-lg group"
-      >
-        <Book size={14} className="text-emerald-400 group-hover:scale-110 transition-transform" />
-        <span>SITES</span>
-      </a>
+    <div className="flex justify-center items-center px-4 py-4 w-full max-w-4xl mx-auto mt-4 mb-20 md:mb-14 shrink-0 z-10">
+      <SocialLinksBar size="md" variant="glass" />
     </div>
   );
 

@@ -25,6 +25,7 @@ import {
 import { BrazilianLogo } from './BrazilianLogo';
 import { SubscriptionInfoModal } from './SubscriptionInfoModal';
 import { Clock } from './Clock';
+import { SocialLinksBar } from './SocialLinksBar';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -694,6 +695,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               Voltar ao Login de Alunos
             </button>
           )}
+        </div>
+
+        {/* Social Media Channels (YouTube, TikTok, Instagram, WhatsApp) */}
+        <div className="mt-4 flex justify-center w-full pointer-events-auto">
+          <SocialLinksBar size="md" variant="glass" />
         </div>
       </div>
 

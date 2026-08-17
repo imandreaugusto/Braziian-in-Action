@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { UserProfile, GlobalAppConfig } from '../types';
 import { BrazilianLogo } from './BrazilianLogo';
+import { SocialLinksBar } from './SocialLinksBar';
 
 interface SidebarProps {
   currentApp: string;
@@ -235,8 +236,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span className="font-semibold text-white/90 uppercase tracking-wider">{currentItem.label}</span>
         </div>
 
-        {/* Right Floating Island: User Profile & Actions */}
-        <div className="flex items-center gap-2 shrink-0 pointer-events-auto">
+        {/* Right Floating Island: Social Links & User Profile & Actions */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 pointer-events-auto">
+          {/* Social Channels (YouTube, TikTok, Instagram, WhatsApp) - Responsive Glass Island */}
+          <div className="hidden xs:flex items-center">
+            <SocialLinksBar size="sm" variant="glass" />
+          </div>
+
           {/* Ver como Aluno (Simulação de Visão do Aluno) - EXCLUSIVO PARA O CEO - Apenas Ícone */}
           {isActualAdmin && onToggleStudentPreview && (
             <button
@@ -358,10 +364,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 })}
               </div>
 
-              {/* Drawer Footer info */}
-              <div className="pt-4 border-t border-white/10 text-center flex flex-col items-center gap-1 text-[11px] text-white/40">
-                <span className="font-semibold text-white/60">Brazilian in Action Platform</span>
-                <span>{isAdmin ? 'Modo CEO & Gestão Total' : 'Ambiente do Aluno'}</span>
+              {/* Drawer Footer info & Social Media */}
+              <div className="pt-4 border-t border-white/10 text-center flex flex-col items-center gap-2.5 text-[11px] text-white/40">
+                <SocialLinksBar size="sm" variant="minimal" />
+                <div className="flex flex-col items-center gap-0.5">
+                  <span className="font-semibold text-white/60">Brazilian in Action Platform</span>
+                  <span>{isAdmin ? 'Modo CEO & Gestão Total' : 'Ambiente do Aluno'}</span>
+                </div>
               </div>
             </motion.nav>
           </>

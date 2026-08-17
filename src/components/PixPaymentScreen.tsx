@@ -20,6 +20,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { BrazilianLogo } from './BrazilianLogo';
+import { SocialLinksBar } from './SocialLinksBar';
 
 interface PixPaymentScreenProps {
   user: UserProfile;
@@ -515,19 +516,23 @@ export const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
           </div>
         )}
 
-        {/* Security & Logout Actions */}
-        <div className="flex items-center justify-between w-full mt-4 pt-3 border-t border-white/10 text-[11px] text-white/50">
-          <div className="flex items-center gap-1.5">
-            <ShieldCheck size={14} className="text-emerald-400" />
-            <span>Processamento Seguro Brazilian in Action</span>
+        {/* Social Media Channels & Security / Logout Actions */}
+        <div className="w-full mt-4 pt-3 border-t border-white/10 flex flex-col items-center gap-3">
+          <SocialLinksBar size="sm" variant="glass" />
+
+          <div className="flex items-center justify-between w-full text-[11px] text-white/50">
+            <div className="flex items-center gap-1.5">
+              <ShieldCheck size={14} className="text-emerald-400" />
+              <span>Processamento Seguro Brazilian in Action</span>
+            </div>
+            <button
+              type="button"
+              onClick={onLogout}
+              className="text-white/60 hover:text-red-400 underline cursor-pointer"
+            >
+              Sair da Conta
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={onLogout}
-            className="text-white/60 hover:text-red-400 underline cursor-pointer"
-          >
-            Sair da Conta
-          </button>
         </div>
       </motion.div>
 
