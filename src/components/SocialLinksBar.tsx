@@ -64,58 +64,48 @@ export const WhatsAppIcon: React.FC<{ size?: number; className?: string }> = ({ 
 interface SocialLinksBarProps {
   size?: 'sm' | 'md' | 'lg';
   className?: string;
-  variant?: 'glass' | 'pill' | 'minimal';
 }
 
 export const SocialLinksBar: React.FC<SocialLinksBarProps> = ({
   size = 'md',
-  className = '',
-  variant = 'glass'
+  className = ''
 }) => {
-  const iconSize = size === 'sm' ? 15 : size === 'lg' ? 22 : 18;
-  const paddingClass = size === 'sm' ? 'p-1.5' : size === 'lg' ? 'p-2.5' : 'p-2';
+  const iconSize = size === 'sm' ? 16 : size === 'lg' ? 22 : 18;
+  const buttonPadding = size === 'sm' ? 'w-9 h-9' : size === 'lg' ? 'w-11 h-11' : 'w-10 h-10';
 
   const socialItems = [
     {
       id: 'youtube',
       url: SOCIAL_LINKS.youtube,
       icon: YouTubeIcon,
-      hoverClass: 'hover:text-red-500 hover:bg-red-500/15 hover:border-red-500/40 hover:shadow-[0_0_12px_rgba(239,68,68,0.4)]',
+      hoverClass: 'hover:text-white hover:bg-red-600 hover:border-red-500 hover:shadow-[0_0_18px_rgba(239,68,68,0.6)] text-red-400 border-red-500/30 bg-black/40',
       label: 'YouTube Oficial'
     },
     {
       id: 'tiktok',
       url: SOCIAL_LINKS.tiktok,
       icon: TikTokIcon,
-      hoverClass: 'hover:text-cyan-400 hover:bg-cyan-500/15 hover:border-cyan-500/40 hover:shadow-[0_0_12px_rgba(34,211,238,0.4)]',
+      hoverClass: 'hover:text-black hover:bg-cyan-400 hover:border-cyan-300 hover:shadow-[0_0_18px_rgba(34,211,238,0.6)] text-cyan-400 border-cyan-500/30 bg-black/40',
       label: 'TikTok Oficial'
     },
     {
       id: 'instagram',
       url: SOCIAL_LINKS.instagram,
       icon: InstagramIcon,
-      hoverClass: 'hover:text-pink-400 hover:bg-pink-500/15 hover:border-pink-500/40 hover:shadow-[0_0_12px_rgba(244,114,182,0.4)]',
+      hoverClass: 'hover:text-white hover:bg-gradient-to-tr hover:from-amber-500 hover:via-pink-600 hover:to-purple-600 hover:border-pink-400 hover:shadow-[0_0_18px_rgba(244,114,182,0.6)] text-pink-400 border-pink-500/30 bg-black/40',
       label: 'Instagram Oficial'
     },
     {
       id: 'whatsapp',
       url: SOCIAL_LINKS.whatsapp,
       icon: WhatsAppIcon,
-      hoverClass: 'hover:text-emerald-400 hover:bg-emerald-500/15 hover:border-emerald-500/40 hover:shadow-[0_0_12px_rgba(52,211,153,0.4)]',
+      hoverClass: 'hover:text-white hover:bg-emerald-600 hover:border-emerald-400 hover:shadow-[0_0_18px_rgba(52,211,153,0.6)] text-emerald-400 border-emerald-500/30 bg-black/40',
       label: 'Canal VIP WhatsApp'
     }
   ];
 
   return (
-    <div
-      className={`inline-flex items-center gap-1.5 sm:gap-2 ${
-        variant === 'glass'
-          ? 'p-1 sm:p-1.5 rounded-2xl bg-neutral-900/80 border border-white/15 backdrop-blur-xl shadow-2xl'
-          : variant === 'pill'
-          ? 'p-1 rounded-full bg-neutral-950/70 border border-white/10 backdrop-blur-md shadow-lg'
-          : 'gap-2'
-      } ${className}`}
-    >
+    <div className={`flex items-center gap-2 sm:gap-2.5 ${className}`}>
       {socialItems.map((item) => {
         const IconComponent = item.icon;
         return (
@@ -126,7 +116,7 @@ export const SocialLinksBar: React.FC<SocialLinksBarProps> = ({
             rel="noopener noreferrer"
             title={item.label}
             aria-label={item.label}
-            className={`${paddingClass} rounded-xl text-white/70 bg-white/5 border border-white/10 transition-all duration-200 cursor-pointer flex items-center justify-center active:scale-95 ${item.hoverClass}`}
+            className={`${buttonPadding} rounded-2xl border transition-all duration-300 cursor-pointer flex items-center justify-center backdrop-blur-md shadow-lg hover:scale-110 active:scale-95 ${item.hoverClass}`}
           >
             <IconComponent size={iconSize} />
           </a>

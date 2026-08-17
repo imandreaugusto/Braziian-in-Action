@@ -697,9 +697,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           )}
         </div>
 
-        {/* Social Media Channels (YouTube, TikTok, Instagram, WhatsApp) */}
+        {/* Social Media Channels (YouTube, TikTok, Instagram, WhatsApp) - Soltos & Separados */}
         <div className="mt-4 flex justify-center w-full pointer-events-auto">
-          <SocialLinksBar size="md" variant="glass" />
+          <SocialLinksBar size="md" />
         </div>
       </div>
 

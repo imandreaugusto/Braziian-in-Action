@@ -133,10 +133,10 @@ export const Home: React.FC<HomeProps> = ({
   }).length;
   const remainingTodayCount = todayClasses.length - completedTodayCount;
 
-  // Reusable Social Media Footer (YouTube, TikTok, Instagram, WhatsApp)
+  // Reusable Social Media Footer (YouTube, TikTok, Instagram, WhatsApp) - Soltos e Separados
   const renderSocialLinks = () => (
     <div className="flex justify-center items-center px-4 py-4 w-full max-w-4xl mx-auto mt-4 mb-20 md:mb-14 shrink-0 z-10">
-      <SocialLinksBar size="md" variant="glass" />
+      <SocialLinksBar size="md" />
     </div>
   );
 

@@ -238,9 +238,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Right Floating Island: Social Links & User Profile & Actions */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 pointer-events-auto">
-          {/* Social Channels (YouTube, TikTok, Instagram, WhatsApp) - Responsive Glass Island */}
+          {/* Social Channels (YouTube, TikTok, Instagram, WhatsApp) - Soltos & Separados */}
           <div className="hidden xs:flex items-center">
-            <SocialLinksBar size="sm" variant="glass" />
+            <SocialLinksBar size="sm" />
           </div>
 
           {/* Ver como Aluno (Simulação de Visão do Aluno) - EXCLUSIVO PARA O CEO - Apenas Ícone */}
@@ -366,7 +366,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               {/* Drawer Footer info & Social Media */}
               <div className="pt-4 border-t border-white/10 text-center flex flex-col items-center gap-2.5 text-[11px] text-white/40">
-                <SocialLinksBar size="sm" variant="minimal" />
+                <SocialLinksBar size="sm" />
                 <div className="flex flex-col items-center gap-0.5">
                   <span className="font-semibold text-white/60">Brazilian in Action Platform</span>
                   <span>{isAdmin ? 'Modo CEO & Gestão Total' : 'Ambiente do Aluno'}</span>

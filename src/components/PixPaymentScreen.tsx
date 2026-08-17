@@ -518,7 +518,7 @@ export const PixPaymentScreen: React.FC<PixPaymentScreenProps> = ({
 
         {/* Social Media Channels & Security / Logout Actions */}
         <div className="w-full mt-4 pt-3 border-t border-white/10 flex flex-col items-center gap-3">
-          <SocialLinksBar size="sm" variant="glass" />
+          <SocialLinksBar size="sm" />
 
           <div className="flex items-center justify-between w-full text-[11px] text-white/50">
             <div className="flex items-center gap-1.5">
